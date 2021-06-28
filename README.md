@@ -28,4 +28,4 @@ Static method for convert a JSON String to xlsx file
 ## Notes
 - All converters needs FileParams as param. If you want use the default, just create a constructor for it
 - See [test packages](src/test/java) for reference (main FunctionTest)
-- Any problems reported will be helpful
+- Any problems or suggestions reported will be helpful
