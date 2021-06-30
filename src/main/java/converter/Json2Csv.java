@@ -52,41 +52,4 @@ public class Json2Csv {
             return false;
         }
     }
-
-    public static boolean generate(final List<String> jsonList, final FileParams fp) {
-        try {
-            for (int i = 0; i < jsonList.size(); i++) {
-                //read JSON string into JSON object
-                final JsonNode objJson = new ObjectMapper().readTree(jsonList.get(i));
-                final Builder csvBuilder = CsvSchema.builder();
-                //read JSON column names (first element)
-                final JsonNode firstObject = objJson.elements().next();
-                firstObject.fieldNames().forEachRemaining(csvBuilder::addColumn);
-                //create csv model
-                final CsvSchema csvSchema = csvBuilder.build().withHeader().withColumnSeparator(fp.getCsvParams().getSeparator());
-                //map JSON object to CSV
-                final CsvMapper csvMapper = new CsvMapper();
-                final DateFormat df = new SimpleDateFormat(fp.getCsvParams().getDatePattern());
-                csvMapper.setDateFormat(df);
-                //write data
-                String fileFullPathIndex = fp.getFullPath().replace(".csv", "(" + i + ").csv");
-                csvMapper.writerFor(JsonNode.class).with(csvSchema).writeValue(new File(fileFullPathIndex), objJson);
-                logger.info("File created successfully: " + fileFullPathIndex);
-            }
-            logger.info("CSV files created successfully: Number of records - " + jsonList.size());
-            return true;
-        } catch (JsonMappingException e) {
-            logger.error("JsonMappingException error. Message: " + e.getMessage());
-            return false;
-        } catch (JsonGenerationException e) {
-            logger.error("JsonGenerationException error. Message: " + e.getMessage());
-            return false;
-        } catch (JsonProcessingException e) {
-            logger.error("JsonProcessingException error. Message: " + e.getMessage());
-            return false;
-        } catch (IOException e) {
-            logger.error("IOException error. Message: " + e.getMessage());
-            return false;
-        }
-    }
 }

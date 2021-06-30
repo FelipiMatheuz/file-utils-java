@@ -147,7 +147,7 @@ public class Json2Excel {
                 firstObject.fieldNames().forEachRemaining(headers::add);
 
                 final Sheet sheet;
-                if (fp.getExcelParams().getSheetName().size() > 0) {
+                if (fp.getExcelParams().getSheetName().size() > 0 && l < fp.getExcelParams().getSheetName().size()) {
                     sheet = workbook.createSheet(fp.getExcelParams().getSheetName().get(l));
                 } else {
                     sheet = workbook.createSheet("Sheet" + (l + 1));

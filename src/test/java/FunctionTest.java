@@ -59,25 +59,10 @@ public class FunctionTest {
 
     @Test
     @DisplayName("Test JSON -> CSV")
-    public void testJson2CsvSingle() {
+    public void testJson2Csv() {
         init(FileUtils.CSV);
         assertTrue(Json2Csv.generate(VariablesTest.jsonMock, VariablesTest.fp));
         System.out.println("CSV file generated:\n" + VariablesTest.fp.getFileName());
-    }
-
-    @Test
-    @DisplayName("Test JSON List -> CSV")
-    public void testJson2CsvMultiple() {
-        init(FileUtils.CSV);
-        List<String> jsonMocks = new ArrayList<>();
-        jsonMocks.add(VariablesTest.jsonMock);
-        jsonMocks.add(VariablesTest.jsonMock);
-        jsonMocks.add(VariablesTest.jsonMock);
-        assertTrue(Json2Csv.generate(jsonMocks, VariablesTest.fp));
-        System.out.println("CSV files generated:");
-        for (int i = 0;i<jsonMocks.size();i++) {
-            System.out.println(VariablesTest.fp.getFileName().replace(".csv", "(" + i + ").csv"));
-        }
     }
 
     @Test
