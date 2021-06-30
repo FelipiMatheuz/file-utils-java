@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import utils.FileUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,28 +26,58 @@ public class FunctionTest {
     }
 
     @Test
-    @DisplayName("Test JSON -> Excel")
-    public void testJson2Excel() {
+    @DisplayName("Test JSON -> Excel Single")
+    public void testJson2ExcelSingle() {
         init(FileUtils.EXCEL);
         assertTrue(Json2Excel.generate(VariablesTest.jsonMock, VariablesTest.fp));
-        System.out.println("Excel file generated: " + VariablesTest.fp.getFileName());
+        System.out.println("Excel file generated:\n" + VariablesTest.fp.getFileName());
     }
 
     @Test
-    @DisplayName("Test Excel -> JSON")
+    @DisplayName("Test JSON -> Excel Multiple")
+    public void testJson2ExcelMultiple() {
+        init(FileUtils.EXCEL);
+        List<String> jsonMocks = new ArrayList<>();
+        jsonMocks.add(VariablesTest.jsonMock);
+        jsonMocks.add(VariablesTest.jsonMock);
+        jsonMocks.add(VariablesTest.jsonMock);
+        assertTrue(Json2Excel.generate(jsonMocks, VariablesTest.fp));
+        System.out.println("Excel file generated:\n" + VariablesTest.fp.getFileName());
+    }
+
+    @Test
+    @DisplayName("Test Excel -> JSON List")
     public void testExcel2Json() {
         init(FileUtils.EXCEL);
-        String json = Excel2Json.generate(VariablesTest.fp);
-        assertNotNull(json);
-        System.out.println("JSON generated:\n" + json);
+        List<String> jsonList = Excel2Json.generate(VariablesTest.fp);
+        assertNotNull(jsonList);
+        System.out.println("JSONs generated:");
+        for (String json : jsonList) {
+            System.out.println(json);
+        }
     }
 
     @Test
     @DisplayName("Test JSON -> CSV")
-    public void testJson2Csv() {
+    public void testJson2CsvSingle() {
         init(FileUtils.CSV);
         assertTrue(Json2Csv.generate(VariablesTest.jsonMock, VariablesTest.fp));
-        System.out.println("CSV file generated: " + VariablesTest.fp.getFileName());
+        System.out.println("CSV file generated:\n" + VariablesTest.fp.getFileName());
+    }
+
+    @Test
+    @DisplayName("Test JSON List -> CSV")
+    public void testJson2CsvMultiple() {
+        init(FileUtils.CSV);
+        List<String> jsonMocks = new ArrayList<>();
+        jsonMocks.add(VariablesTest.jsonMock);
+        jsonMocks.add(VariablesTest.jsonMock);
+        jsonMocks.add(VariablesTest.jsonMock);
+        assertTrue(Json2Csv.generate(jsonMocks, VariablesTest.fp));
+        System.out.println("CSV files generated:");
+        for (int i = 0;i<jsonMocks.size();i++) {
+            System.out.println(VariablesTest.fp.getFileName().replace(".csv", "(" + i + ").csv"));
+        }
     }
 
     @Test
@@ -58,8 +89,8 @@ public class FunctionTest {
         System.out.println("JSON generated:\n" + json);
     }
 
-    private void init(String extension){
-        VariablesTest.fp.setFileName("Test File."+extension);
+    private void init(String extension) {
+        VariablesTest.fp.setFileName("Test_File." + extension);
         List<Integer> intList = Arrays.asList(FileUtils.INTEGER, FileUtils.STRING, FileUtils.BOOLEAN, FileUtils.INTEGER, FileUtils.DOUBLE);
         VariablesTest.fp.setColumnTypes(intList);
     }

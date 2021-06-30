@@ -9,8 +9,8 @@ public class FileParams {
     private String fileName;
     private String dateTimePattern = "yyyyMMddhhmmss";
     private List<Integer> columnTypes = null;
-    private ExcelParams excelParams = new ExcelParams();
     private String fileSpace = "_";
+    private ExcelParams excelParams = new ExcelParams();
     private CsvParams csvParams = new CsvParams();
 
     public FileParams(String filePath, String fileName) {

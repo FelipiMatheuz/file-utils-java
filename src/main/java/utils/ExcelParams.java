@@ -1,11 +1,14 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExcelParams {
 
     private boolean hasFilter = true;
     private boolean freezeHeader = false;
     private boolean autoSizeColumn = true;
-    private String sheetName = "Sheet1";
+    private List<String> sheetName = new ArrayList<>();
     private boolean headerBold = true;
 
     public boolean isHasFilter() {
@@ -40,11 +43,11 @@ public class ExcelParams {
         this.headerBold = headerBold;
     }
 
-    public String getSheetName() {
+    public List<String> getSheetName() {
         return sheetName;
     }
 
-    public void setSheetName(String sheetName) {
+    public void setSheetName(List<String> sheetName) {
         this.sheetName = sheetName;
     }
 }

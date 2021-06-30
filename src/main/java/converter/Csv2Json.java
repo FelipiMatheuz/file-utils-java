@@ -3,6 +3,7 @@ package converter;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 import utils.FileParams;
 
 import java.io.*;
@@ -11,6 +12,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Csv2Json {
+
+    static Logger logger = Logger.getLogger(Csv2Json.class.getName());
+
     public static String generate(final FileParams fp) {
         try {
             Pattern pattern = Pattern.compile(String.valueOf(fp.getCsvParams().getSeparator()));
@@ -46,19 +50,23 @@ public class Csv2Json {
                 }
                 return obj;
             }).collect(Collectors.toList());
+
             final ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(objectList);
+            String data = mapper.writeValueAsString(objectList);
+
+            logger.info("JSON created successfully: " + data);
+            return data;
         } catch (FileNotFoundException e) {
-            System.out.println("FileNotFoundException error. Message: " + e.getMessage());
+            logger.error("FileNotFoundException error. Message: " + e.getMessage());
             return null;
         } catch (JsonMappingException e) {
-            System.out.println("JsonMappingException error. Message: " + e.getMessage());
+            logger.error("JsonMappingException error. Message: " + e.getMessage());
             return null;
         } catch (JsonGenerationException e) {
-            System.out.println("JsonGenerationException error. Message: " + e.getMessage());
+            logger.error("JsonGenerationException error. Message: " + e.getMessage());
             return null;
         } catch (IOException e) {
-            System.out.println("IOException error. Message: " + e.getMessage());
+            logger.error("IOException error. Message: " + e.getMessage());
             return null;
         }
     }
