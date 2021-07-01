@@ -22,14 +22,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import utils.FileParams;
+import model.ExcelParams;
 
 public class Json2Excel {
 
     static Logger logger = Logger.getLogger(Json2Excel.class.getName());
 
-    public static boolean generate(final String jsonStr, final FileParams fp) {
+    public static boolean generate(final String jsonStr, final ExcelParams excelParams) {
         try {
+            //create workbook with single sheet
+            final Workbook workbook = new XSSFWorkbook();
+
             //convert JSON string to Java list objects
             final JsonNode jsonNode = new ObjectMapper().readTree(jsonStr);
 
@@ -38,12 +41,9 @@ public class Json2Excel {
             final JsonNode firstObject = jsonNode.elements().next();
             firstObject.fieldNames().forEachRemaining(headers::add);
 
-            //create workbook with single sheet
-            final Workbook workbook = new XSSFWorkbook();
-
             final Sheet sheet;
-            if (fp.getExcelParams().getSheetName().size() > 0) {
-                sheet = workbook.createSheet(fp.getExcelParams().getSheetName().get(0));
+            if (excelParams.getSheetName().size() > 0) {
+                sheet = workbook.createSheet(excelParams.getSheetName().get(0));
             } else {
                 sheet = workbook.createSheet("Sheet");
             }
@@ -54,7 +54,7 @@ public class Json2Excel {
                 final Cell cell = headerRow.createCell(col);
                 cell.setCellValue(headers.get(col));
                 //customize header
-                if (fp.getExcelParams().isFreezeHeader()) {
+                if (excelParams.isFreezeHeader()) {
                     Font headerFont = workbook.createFont();
                     headerFont.setBold(true);
                     final CellStyle headerCellStyle = workbook.createCellStyle();
@@ -70,7 +70,7 @@ public class Json2Excel {
                 final Row row = sheet.createRow(r);
                 final JsonNode dataNode = dataIterator.next();
 
-                if (fp.getColumnTypes() == null) {
+                if (excelParams.getColumnTypes() == null) {
                     //record simple string data
                     for (int i = 0; i < dataNode.size(); i++) {
                         row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());
@@ -78,7 +78,7 @@ public class Json2Excel {
                 } else {
                     //record data with different column types
                     for (int i = 0; i < dataNode.size(); i++) {
-                        switch (fp.getColumnTypes().get(i)) {
+                        switch (excelParams.getColumnTypes().get(i)) {
                             case 1:
                                 row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asInt());
                                 break;
@@ -96,26 +96,26 @@ public class Json2Excel {
                 rows = r;
             }
             //filter
-            if (fp.getExcelParams().isHasFilter()) {
+            if (excelParams.isHasFilter()) {
                 sheet.setAutoFilter(new CellRangeAddress(0, rows, 0, headers.size() - 1));
             }
             //panel freeze
-            if (fp.getExcelParams().isFreezeHeader()) {
+            if (excelParams.isFreezeHeader()) {
                 sheet.createFreezePane(0, 1);
             }
             //resize columns to fit data
-            if (fp.getExcelParams().isAutoSizeColumn()) {
+            if (excelParams.isAutoSizeColumn()) {
                 for (int i = 0; i < headers.size(); i++) {
                     sheet.autoSizeColumn(i);
                 }
             }
             //write file
             final FileOutputStream fileOut;
-            fileOut = new FileOutputStream(fp.getFullPath());
+            fileOut = new FileOutputStream(excelParams.getFullPath());
             workbook.write(fileOut);
             fileOut.close();
             workbook.close();
-            logger.info("File created successfully: " + fp.getFileName());
+            logger.info("File created successfully: " + excelParams.getFileName());
             return true;
         } catch (JsonMappingException e) {
             logger.error("JsonMappingException error. Message: " + e.getMessage());
@@ -132,7 +132,7 @@ public class Json2Excel {
         }
     }
 
-    public static boolean generate(final List<String> jsonList, final FileParams fp) {
+    public static boolean generate(final List<String> jsonList, final ExcelParams excelParams) {
 
         try {
             //create workbook with multiple sheets
@@ -147,8 +147,8 @@ public class Json2Excel {
                 firstObject.fieldNames().forEachRemaining(headers::add);
 
                 final Sheet sheet;
-                if (fp.getExcelParams().getSheetName().size() > 0 && l < fp.getExcelParams().getSheetName().size()) {
-                    sheet = workbook.createSheet(fp.getExcelParams().getSheetName().get(l));
+                if (excelParams.getSheetName().size() > 0 && l < excelParams.getSheetName().size()) {
+                    sheet = workbook.createSheet(excelParams.getSheetName().get(l));
                 } else {
                     sheet = workbook.createSheet("Sheet" + (l + 1));
                 }
@@ -159,7 +159,7 @@ public class Json2Excel {
                     final Cell cell = headerRow.createCell(col);
                     cell.setCellValue(headers.get(col));
                     //customize header
-                    if (fp.getExcelParams().isFreezeHeader()) {
+                    if (excelParams.isFreezeHeader()) {
                         Font headerFont = workbook.createFont();
                         headerFont.setBold(true);
                         final CellStyle headerCellStyle = workbook.createCellStyle();
@@ -173,7 +173,7 @@ public class Json2Excel {
                     final Row row = sheet.createRow(r);
                     final JsonNode dataNode = dataIterator.next();
 
-                    if (fp.getColumnTypes() == null) {
+                    if (excelParams.getColumnTypes() == null) {
                         //record simple string data
                         for (int i = 0; i < dataNode.size(); i++) {
                             row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());
@@ -181,7 +181,7 @@ public class Json2Excel {
                     } else {
                         //record data with different column types
                         for (int i = 0; i < dataNode.size(); i++) {
-                            switch (fp.getColumnTypes().get(i)) {
+                            switch (excelParams.getColumnTypes().get(i)) {
                                 case 1:
                                     row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asInt());
                                     break;
@@ -199,15 +199,15 @@ public class Json2Excel {
                     rows = r;
                 }
                 //filter
-                if (fp.getExcelParams().isHasFilter()) {
+                if (excelParams.isHasFilter()) {
                     sheet.setAutoFilter(new CellRangeAddress(0, rows, 0, headers.size() - 1));
                 }
                 //panel freeze
-                if (fp.getExcelParams().isFreezeHeader()) {
+                if (excelParams.isFreezeHeader()) {
                     sheet.createFreezePane(0, 1);
                 }
                 //resize columns to fit data
-                if (fp.getExcelParams().isAutoSizeColumn()) {
+                if (excelParams.isAutoSizeColumn()) {
                     for (int i = 0; i < headers.size(); i++) {
                         sheet.autoSizeColumn(i);
                     }
@@ -215,11 +215,11 @@ public class Json2Excel {
             }
             //write file
             final FileOutputStream fileOut;
-            fileOut = new FileOutputStream(fp.getFullPath());
+            fileOut = new FileOutputStream(excelParams.getFullPath());
             workbook.write(fileOut);
             fileOut.close();
             workbook.close();
-            logger.info("File created successfully: " + fp.getFileName());
+            logger.info("File created successfully: " + excelParams.getFileName());
             return true;
         } catch (JsonMappingException e) {
             logger.error("JsonMappingException error. Message: " + e.getMessage());

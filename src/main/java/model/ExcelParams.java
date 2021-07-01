@@ -1,15 +1,19 @@
-package utils;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExcelParams {
+public class ExcelParams extends FileParams {
 
     private boolean hasFilter = true;
     private boolean freezeHeader = false;
     private boolean autoSizeColumn = true;
     private List<String> sheetName = new ArrayList<>();
     private boolean headerBold = true;
+
+    public ExcelParams(String filePath, String fileName) {
+        super(filePath, fileName);
+    }
 
     public boolean isHasFilter() {
         return hasFilter;
@@ -49,5 +53,10 @@ public class ExcelParams {
 
     public void setSheetName(List<String> sheetName) {
         this.sheetName = sheetName;
+    }
+
+    @Override
+    public String getFileName() {
+        return super.getFileName() + getLogDateTime() + FileParams.EXCEL;
     }
 }

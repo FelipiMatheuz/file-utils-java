@@ -1,10 +1,36 @@
-import utils.FileParams;
+import model.CsvParams;
+import model.ExcelParams;
+import model.FileParams;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class VariablesTest {
 
-    public static FileParams fp = new FileParams(System.getProperty("user.home") + File.separator + "Desktop" + File.separator,"Test Log");
+    public static CsvParams cpMock = cpMock();
+    public static ExcelParams epMock = epMock();
+
+    private static ExcelParams epMock() {
+        ExcelParams excelParams = new ExcelParams(System.getProperty("user.home") + File.separator + "Desktop" + File.separator, "ExcelTest");
+        //generate columnTypes (default all String)
+        List<Integer> intList = Arrays.asList(FileParams.INTEGER, FileParams.STRING, FileParams.BOOLEAN, FileParams.INTEGER, FileParams.DOUBLE);
+        excelParams.setColumnTypes(intList);
+        //generate log files (default null <- no log file)
+        excelParams.setLogDateTime("yyMMddhhmmss");
+        return excelParams;
+    }
+
+    private static CsvParams cpMock() {
+        CsvParams csvParams = new CsvParams(System.getProperty("user.home") + File.separator + "Desktop" + File.separator, "CsvTest");
+        //generate columnTypes (default all String)
+        List<Integer> intList = Arrays.asList(FileParams.INTEGER, FileParams.STRING, FileParams.BOOLEAN, FileParams.INTEGER, FileParams.DOUBLE);
+        csvParams.setColumnTypes(intList);
+        //generate log files (default null <- no log file)
+        csvParams.setLogDateTime("yyyyMMddhhmmss");
+        return csvParams;
+    }
+
     public static String jsonMock = "[\n" +
             "   {\n" +
             "      \"id\":1,\n" +

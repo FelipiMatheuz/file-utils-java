@@ -13,21 +13,21 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import utils.FileParams;
+import model.ExcelParams;
 
 public class Excel2Json {
 
     static Logger logger = Logger.getLogger(Json2Excel.class.getName());
 
-    public static List<String> generate(final FileParams fp) {
+    public static List<String> generate(final ExcelParams excelParams) {
 
         try {
             //read Excel file into Java list objects
-            final FileInputStream excelFile = new FileInputStream(fp.getFullPath());
+            final FileInputStream excelFile = new FileInputStream(excelParams.getFullPath());
             final Workbook workbook = new XSSFWorkbook(excelFile);
             List<String> dataList = new ArrayList<>();
             //get target sheets
-            for(int l=0;l<workbook.getNumberOfSheets();l++) {
+            for (int l = 0; l < workbook.getNumberOfSheets(); l++) {
                 final Sheet sheet = workbook.getSheetAt(l);
                 final Iterator<Row> rows = sheet.iterator();
                 final List<Object> data = new ArrayList<>();
@@ -44,7 +44,7 @@ public class Excel2Json {
                         continue;
                     }
                     Map<String, Object> dataRow = new LinkedHashMap<>();
-                    if (fp.getColumnTypes() == null) {
+                    if (excelParams.getColumnTypes() == null) {
                         //record simple string data
                         for (int i = 0; i < currentRow.getLastCellNum(); i++) {
                             if (currentRow.getCell(i).getCellTypeEnum() == CellType.NUMERIC) {
@@ -58,7 +58,7 @@ public class Excel2Json {
                     } else {
                         //record data with different column types
                         for (int i = 0; i < currentRow.getLastCellNum(); i++) {
-                            switch (fp.getColumnTypes().get(i)) {
+                            switch (excelParams.getColumnTypes().get(i)) {
                                 case 1:
                                     dataRow.put(headers.get(i), (int) currentRow.getCell(i).getNumericCellValue());
                                     break;

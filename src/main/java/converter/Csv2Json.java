@@ -3,8 +3,8 @@ package converter;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import model.CsvParams;
 import org.apache.log4j.Logger;
-import utils.FileParams;
 
 import java.io.*;
 import java.util.*;
@@ -15,15 +15,15 @@ public class Csv2Json {
 
     static Logger logger = Logger.getLogger(Csv2Json.class.getName());
 
-    public static String generate(final FileParams fp) {
+    public static String generate(final CsvParams csvParams) {
         try {
-            Pattern pattern = Pattern.compile(String.valueOf(fp.getCsvParams().getSeparator()));
-            BufferedReader in = new BufferedReader(new FileReader(fp.getFullPath()));
+            Pattern pattern = Pattern.compile(String.valueOf(csvParams.getSeparator()));
+            BufferedReader in = new BufferedReader(new FileReader(csvParams.getFullPath()));
             String[] keys = pattern.split(in.readLine());
             List<Object> objectList = in.lines().map(line -> {
                 List<String> x = Arrays.asList(pattern.split(line, keys.length));
                 Map<String, Object> obj = new LinkedHashMap<>();
-                if (fp.getColumnTypes() == null) {
+                if (csvParams.getColumnTypes() == null) {
                     //record simple string data
                     for (int i = 0; i < keys.length; i++) {
                         obj.put(keys[i], x.get(i).replace("\"", ""));
@@ -33,7 +33,7 @@ public class Csv2Json {
                     for (int i = 0; i < keys.length; i++) {
                         //get string temporary to avoid parsing errors
                         String temp = x.get(i).replace("\"", "");
-                        switch (fp.getColumnTypes().get(i)) {
+                        switch (csvParams.getColumnTypes().get(i)) {
                             case 1:
                                 obj.put(keys[i], temp.isEmpty() ? 0 : Integer.parseInt(temp));
                                 break;

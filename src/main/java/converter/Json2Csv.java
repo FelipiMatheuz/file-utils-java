@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,13 +14,13 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema.Builder;
 import org.apache.log4j.Logger;
-import utils.FileParams;
+import model.CsvParams;
 
 public class Json2Csv {
 
     static Logger logger = Logger.getLogger(Json2Csv.class.getName());
 
-    public static boolean generate(final String jsonStr, final FileParams fp) {
+    public static boolean generate(final String jsonStr, final CsvParams csvParams) {
         try {
             //read JSON string into JSON object
             final JsonNode objJson = new ObjectMapper().readTree(jsonStr);
@@ -30,13 +29,13 @@ public class Json2Csv {
             final JsonNode firstObject = objJson.elements().next();
             firstObject.fieldNames().forEachRemaining(csvBuilder::addColumn);
             //create csv model
-            final CsvSchema csvSchema = csvBuilder.build().withHeader().withColumnSeparator(fp.getCsvParams().getSeparator());
+            final CsvSchema csvSchema = csvBuilder.build().withHeader().withColumnSeparator(csvParams.getSeparator());
             //map JSON object to CSV
             final CsvMapper csvMapper = new CsvMapper();
-            final DateFormat df = new SimpleDateFormat(fp.getCsvParams().getDatePattern());
+            final DateFormat df = new SimpleDateFormat(csvParams.getDatePattern());
             csvMapper.setDateFormat(df);
             //write data
-            csvMapper.writerFor(JsonNode.class).with(csvSchema).writeValue(new File(fp.getFullPath()), objJson);
+            csvMapper.writerFor(JsonNode.class).with(csvSchema).writeValue(new File(csvParams.getFullPath()), objJson);
             return true;
         } catch (JsonMappingException e) {
             logger.error("JsonMappingException error. Message: " + e.getMessage());
