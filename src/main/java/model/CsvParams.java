@@ -27,6 +27,6 @@ public class CsvParams extends FileParams {
 
     @Override
     public String getFileName() {
-        return super.getFileName() + getLogDateTime() + FileParams.CSV;
+        return super.getFileName() + getLogDateTime() + Extension.CSV;
     }
 }

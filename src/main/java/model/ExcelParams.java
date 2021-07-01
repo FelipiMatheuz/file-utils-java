@@ -8,7 +8,7 @@ public class ExcelParams extends FileParams {
     private boolean hasFilter = true;
     private boolean freezeHeader = false;
     private boolean autoSizeColumn = true;
-    private List<String> sheetName = new ArrayList<>();
+    private List<String> sheetNames = new ArrayList<>();
     private boolean headerBold = true;
 
     public ExcelParams(String filePath, String fileName) {
@@ -47,16 +47,16 @@ public class ExcelParams extends FileParams {
         this.headerBold = headerBold;
     }
 
-    public List<String> getSheetName() {
-        return sheetName;
+    public List<String> getSheetNames() {
+        return sheetNames;
     }
 
-    public void setSheetName(List<String> sheetName) {
-        this.sheetName = sheetName;
+    public void setSheetNames(List<String> sheetNames) {
+        this.sheetNames = sheetNames;
     }
 
     @Override
     public String getFileName() {
-        return super.getFileName() + getLogDateTime() + FileParams.EXCEL;
+        return super.getFileName() + getLogDateTime() + Extension.EXCEL;
     }
 }

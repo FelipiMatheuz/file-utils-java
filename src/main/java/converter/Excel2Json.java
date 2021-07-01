@@ -44,7 +44,7 @@ public class Excel2Json {
                         continue;
                     }
                     Map<String, Object> dataRow = new LinkedHashMap<>();
-                    if (excelParams.getColumnTypes() == null) {
+                    if (excelParams.getColumnTypes() == null || excelParams.getColumnTypes().size() <= l) {
                         //record simple string data
                         for (int i = 0; i < currentRow.getLastCellNum(); i++) {
                             if (currentRow.getCell(i).getCellTypeEnum() == CellType.NUMERIC) {
@@ -58,14 +58,14 @@ public class Excel2Json {
                     } else {
                         //record data with different column types
                         for (int i = 0; i < currentRow.getLastCellNum(); i++) {
-                            switch (excelParams.getColumnTypes().get(i)) {
-                                case 1:
+                            switch (excelParams.getColumnTypes().get(l).get(i)) {
+                                case INTEGER:
                                     dataRow.put(headers.get(i), (int) currentRow.getCell(i).getNumericCellValue());
                                     break;
-                                case 2:
+                                case DOUBLE:
                                     dataRow.put(headers.get(i), currentRow.getCell(i).getNumericCellValue());
                                     break;
-                                case 3:
+                                case BOOLEAN:
                                     dataRow.put(headers.get(i), currentRow.getCell(i).getBooleanCellValue());
                                     break;
                                 default:

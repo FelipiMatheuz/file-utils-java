@@ -4,23 +4,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class FileParams {
-
-    //static column types
-    public static int STRING = 0;
-    public static int INTEGER = 1;
-    public static int DOUBLE = 2;
-    public static int BOOLEAN = 3;
-
-    //static extension types
-    public static String EXCEL = ".xlsx";
-    public static String CSV = ".csv";
+class FileParams {
 
     //default param values
     private String filePath;
     private String fileName;
     private String logDateTime = null;
-    private List<Integer> columnTypes = null;
+    private List<List<ColumnType>> columnTypes = null;
 
     public FileParams(String filePath, String fileName) {
         this.filePath = filePath;
@@ -43,11 +33,11 @@ public class FileParams {
         this.fileName = fileName;
     }
 
-    public List<Integer> getColumnTypes() {
+    public List<List<ColumnType>> getColumnTypes() {
         return columnTypes;
     }
 
-    public void setColumnTypes(List<Integer> columnTypes) {
+    public void setColumnTypes(List<List<ColumnType>> columnTypes) {
         this.columnTypes = columnTypes;
     }
 

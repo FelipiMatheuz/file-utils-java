@@ -1,6 +1,6 @@
 import model.CsvParams;
 import model.ExcelParams;
-import model.FileParams;
+import model.ColumnType;
 
 import java.io.File;
 import java.util.Arrays;
@@ -14,20 +14,22 @@ public class VariablesTest {
     private static ExcelParams epMock() {
         ExcelParams excelParams = new ExcelParams(System.getProperty("user.home") + File.separator + "Desktop" + File.separator, "ExcelTest");
         //generate columnTypes (default all String)
-        List<Integer> intList = Arrays.asList(FileParams.INTEGER, FileParams.STRING, FileParams.BOOLEAN, FileParams.INTEGER, FileParams.DOUBLE);
-        excelParams.setColumnTypes(intList);
+        List<ColumnType> columnTypeList = Arrays.asList(ColumnType.INTEGER, ColumnType.STRING, ColumnType.BOOLEAN, ColumnType.INTEGER, ColumnType.DOUBLE);
+        List<List<ColumnType>> matrixList = Arrays.asList(columnTypeList, columnTypeList);
+        excelParams.setColumnTypes(matrixList);
         //generate log files (default null <- no log file)
-        excelParams.setLogDateTime("yyMMddhhmmss");
+        //excelParams.setLogDateTime("yyMMddhhmmss");
         return excelParams;
     }
 
     private static CsvParams cpMock() {
         CsvParams csvParams = new CsvParams(System.getProperty("user.home") + File.separator + "Desktop" + File.separator, "CsvTest");
         //generate columnTypes (default all String)
-        List<Integer> intList = Arrays.asList(FileParams.INTEGER, FileParams.STRING, FileParams.BOOLEAN, FileParams.INTEGER, FileParams.DOUBLE);
-        csvParams.setColumnTypes(intList);
+        List<ColumnType> columnTypeList = Arrays.asList(ColumnType.INTEGER, ColumnType.STRING, ColumnType.BOOLEAN, ColumnType.INTEGER, ColumnType.DOUBLE);
+        List<List<ColumnType>> matrixList = Arrays.asList(columnTypeList, columnTypeList);
+        csvParams.setColumnTypes(matrixList);
         //generate log files (default null <- no log file)
-        csvParams.setLogDateTime("yyyyMMddhhmmss");
+        //csvParams.setLogDateTime("yyyyMMddhhmmss");
         return csvParams;
     }
 

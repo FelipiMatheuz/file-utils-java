@@ -6,7 +6,6 @@ Methods can be used in many ways, without much customization
 ## FileParams
 Core params, which is used as help for file customization
 - There are two main params: `filePath` and `fileName` (no need of file extension)
-- Static params for support when defining FileParams
 - No direct usage in conversions, only for defining certain params
 ###ExcelParams
 Params for convert **JSON** string(s) to **XLSX** file (or vice versa)

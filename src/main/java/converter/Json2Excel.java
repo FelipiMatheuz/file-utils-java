@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import model.ColumnType;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,83 +33,17 @@ public class Json2Excel {
         try {
             //create workbook with single sheet
             final Workbook workbook = new XSSFWorkbook();
-
+            //get sheet name or generate automatically
+            String sheetName;
+            if (excelParams.getSheetNames().size() > 0) {
+                sheetName = excelParams.getSheetNames().get(0);
+            } else {
+                sheetName = "Sheet";
+            }
             //convert JSON string to Java list objects
             final JsonNode jsonNode = new ObjectMapper().readTree(jsonStr);
-
-            //get headers from JSON object
-            final List<String> headers = new ArrayList<>();
-            final JsonNode firstObject = jsonNode.elements().next();
-            firstObject.fieldNames().forEachRemaining(headers::add);
-
-            final Sheet sheet;
-            if (excelParams.getSheetName().size() > 0) {
-                sheet = workbook.createSheet(excelParams.getSheetName().get(0));
-            } else {
-                sheet = workbook.createSheet("Sheet");
-            }
-
-            //row for Header
-            final Row headerRow = sheet.createRow(0);
-            for (int col = 0; col < headers.size(); col++) {
-                final Cell cell = headerRow.createCell(col);
-                cell.setCellValue(headers.get(col));
-                //customize header
-                if (excelParams.isFreezeHeader()) {
-                    Font headerFont = workbook.createFont();
-                    headerFont.setBold(true);
-                    final CellStyle headerCellStyle = workbook.createCellStyle();
-                    headerCellStyle.setFont(headerFont);
-                    cell.setCellStyle(headerCellStyle);
-                }
-            }
-
-
-            final Iterator<JsonNode> dataIterator = jsonNode.elements();
-            int rows = 0;
-            for (int r = 1; dataIterator.hasNext(); r++) {
-                final Row row = sheet.createRow(r);
-                final JsonNode dataNode = dataIterator.next();
-
-                if (excelParams.getColumnTypes() == null) {
-                    //record simple string data
-                    for (int i = 0; i < dataNode.size(); i++) {
-                        row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());
-                    }
-                } else {
-                    //record data with different column types
-                    for (int i = 0; i < dataNode.size(); i++) {
-                        switch (excelParams.getColumnTypes().get(i)) {
-                            case 1:
-                                row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asInt());
-                                break;
-                            case 2:
-                                row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asDouble());
-                                break;
-                            case 3:
-                                row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asBoolean());
-                                break;
-                            default:
-                                row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());
-                        }
-                    }
-                }
-                rows = r;
-            }
-            //filter
-            if (excelParams.isHasFilter()) {
-                sheet.setAutoFilter(new CellRangeAddress(0, rows, 0, headers.size() - 1));
-            }
-            //panel freeze
-            if (excelParams.isFreezeHeader()) {
-                sheet.createFreezePane(0, 1);
-            }
-            //resize columns to fit data
-            if (excelParams.isAutoSizeColumn()) {
-                for (int i = 0; i < headers.size(); i++) {
-                    sheet.autoSizeColumn(i);
-                }
-            }
+            List<ColumnType> columnTypes = excelParams.getColumnTypes() != null && excelParams.getColumnTypes().size() > 0 ? excelParams.getColumnTypes().get(0) : null;
+            buildSheet(jsonNode, excelParams, workbook, sheetName, columnTypes);
             //write file
             final FileOutputStream fileOut;
             fileOut = new FileOutputStream(excelParams.getFullPath());
@@ -138,80 +73,17 @@ public class Json2Excel {
             //create workbook with multiple sheets
             final Workbook workbook = new XSSFWorkbook();
             for (int l = 0; l < jsonList.size(); l++) {
+                //get sheet name or generate automatically
+                String sheetName;
+                if (excelParams.getSheetNames().size() > 0 && l < excelParams.getSheetNames().size()) {
+                    sheetName = excelParams.getSheetNames().get(l);
+                } else {
+                    sheetName = "Sheet" + (l + 1);
+                }
                 //convert JSON string to Java list objects
                 final JsonNode jsonNode = new ObjectMapper().readTree(jsonList.get(l));
-
-                //get headers from JSON object
-                final List<String> headers = new ArrayList<>();
-                final JsonNode firstObject = jsonNode.elements().next();
-                firstObject.fieldNames().forEachRemaining(headers::add);
-
-                final Sheet sheet;
-                if (excelParams.getSheetName().size() > 0 && l < excelParams.getSheetName().size()) {
-                    sheet = workbook.createSheet(excelParams.getSheetName().get(l));
-                } else {
-                    sheet = workbook.createSheet("Sheet" + (l + 1));
-                }
-
-                //row for Header
-                final Row headerRow = sheet.createRow(0);
-                for (int col = 0; col < headers.size(); col++) {
-                    final Cell cell = headerRow.createCell(col);
-                    cell.setCellValue(headers.get(col));
-                    //customize header
-                    if (excelParams.isFreezeHeader()) {
-                        Font headerFont = workbook.createFont();
-                        headerFont.setBold(true);
-                        final CellStyle headerCellStyle = workbook.createCellStyle();
-                        headerCellStyle.setFont(headerFont);
-                        cell.setCellStyle(headerCellStyle);
-                    }
-                }
-                final Iterator<JsonNode> dataIterator = jsonNode.elements();
-                int rows = 0;
-                for (int r = 1; dataIterator.hasNext(); r++) {
-                    final Row row = sheet.createRow(r);
-                    final JsonNode dataNode = dataIterator.next();
-
-                    if (excelParams.getColumnTypes() == null) {
-                        //record simple string data
-                        for (int i = 0; i < dataNode.size(); i++) {
-                            row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());
-                        }
-                    } else {
-                        //record data with different column types
-                        for (int i = 0; i < dataNode.size(); i++) {
-                            switch (excelParams.getColumnTypes().get(i)) {
-                                case 1:
-                                    row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asInt());
-                                    break;
-                                case 2:
-                                    row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asDouble());
-                                    break;
-                                case 3:
-                                    row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asBoolean());
-                                    break;
-                                default:
-                                    row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());
-                            }
-                        }
-                    }
-                    rows = r;
-                }
-                //filter
-                if (excelParams.isHasFilter()) {
-                    sheet.setAutoFilter(new CellRangeAddress(0, rows, 0, headers.size() - 1));
-                }
-                //panel freeze
-                if (excelParams.isFreezeHeader()) {
-                    sheet.createFreezePane(0, 1);
-                }
-                //resize columns to fit data
-                if (excelParams.isAutoSizeColumn()) {
-                    for (int i = 0; i < headers.size(); i++) {
-                        sheet.autoSizeColumn(i);
-                    }
-                }
+                List<ColumnType> columnTypes = excelParams.getColumnTypes() != null && excelParams.getColumnTypes().size() > l ? excelParams.getColumnTypes().get(l) : null;
+                buildSheet(jsonNode, excelParams, workbook, sheetName, columnTypes);
             }
             //write file
             final FileOutputStream fileOut;
@@ -233,6 +105,75 @@ public class Json2Excel {
         } catch (IOException e) {
             logger.error("IOException error. Message: " + e.getMessage());
             return false;
+        }
+    }
+
+    private static void buildSheet(JsonNode jsonNode, final ExcelParams excelParams, Workbook workbook, String sheetName, List<ColumnType> columnTypes) {
+        //get headers from JSON object
+        final List<String> headers = new ArrayList<>();
+        final JsonNode firstObject = jsonNode.elements().next();
+        firstObject.fieldNames().forEachRemaining(headers::add);
+
+        final Sheet sheet = workbook.createSheet(sheetName);
+
+        //row for Header
+        final Row headerRow = sheet.createRow(0);
+        for (int col = 0; col < headers.size(); col++) {
+            final Cell cell = headerRow.createCell(col);
+            cell.setCellValue(headers.get(col));
+            //customize header
+            if (excelParams.isFreezeHeader()) {
+                Font headerFont = workbook.createFont();
+                headerFont.setBold(true);
+                final CellStyle headerCellStyle = workbook.createCellStyle();
+                headerCellStyle.setFont(headerFont);
+                cell.setCellStyle(headerCellStyle);
+            }
+        }
+        final Iterator<JsonNode> dataIterator = jsonNode.elements();
+        int rows = 0;
+        for (int r = 1; dataIterator.hasNext(); r++) {
+            final Row row = sheet.createRow(r);
+            final JsonNode dataNode = dataIterator.next();
+
+            if (columnTypes == null) {
+                //record simple string data
+                for (int i = 0; i < dataNode.size(); i++) {
+                    row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());
+                }
+            } else {
+                //record data with different column types
+                for (int i = 0; i < dataNode.size(); i++) {
+                    switch (columnTypes.get(i)) {
+                        case INTEGER:
+                            row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asInt());
+                            break;
+                        case DOUBLE:
+                            row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asDouble());
+                            break;
+                        case BOOLEAN:
+                            row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asBoolean());
+                            break;
+                        default:
+                            row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());
+                    }
+                }
+            }
+            rows = r;
+        }
+        //filter
+        if (excelParams.isHasFilter()) {
+            sheet.setAutoFilter(new CellRangeAddress(0, rows, 0, headers.size() - 1));
+        }
+        //panel freeze
+        if (excelParams.isFreezeHeader()) {
+            sheet.createFreezePane(0, 1);
+        }
+        //resize columns to fit data
+        if (excelParams.isAutoSizeColumn()) {
+            for (int i = 0; i < headers.size(); i++) {
+                sheet.autoSizeColumn(i);
+            }
         }
     }
 }

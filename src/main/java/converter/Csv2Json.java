@@ -23,7 +23,7 @@ public class Csv2Json {
             List<Object> objectList = in.lines().map(line -> {
                 List<String> x = Arrays.asList(pattern.split(line, keys.length));
                 Map<String, Object> obj = new LinkedHashMap<>();
-                if (csvParams.getColumnTypes() == null) {
+                if (csvParams.getColumnTypes() == null || csvParams.getColumnTypes().size() <= 0) {
                     //record simple string data
                     for (int i = 0; i < keys.length; i++) {
                         obj.put(keys[i], x.get(i).replace("\"", ""));
@@ -33,14 +33,15 @@ public class Csv2Json {
                     for (int i = 0; i < keys.length; i++) {
                         //get string temporary to avoid parsing errors
                         String temp = x.get(i).replace("\"", "");
-                        switch (csvParams.getColumnTypes().get(i)) {
-                            case 1:
+
+                        switch (csvParams.getColumnTypes().get(0).get(i)) {
+                            case INTEGER:
                                 obj.put(keys[i], temp.isEmpty() ? 0 : Integer.parseInt(temp));
                                 break;
-                            case 2:
+                            case DOUBLE:
                                 obj.put(keys[i], temp.isEmpty() ? 0.0 : Double.parseDouble(temp));
                                 break;
-                            case 3:
+                            case BOOLEAN:
                                 obj.put(keys[i], Boolean.valueOf(temp));
                                 break;
                             default:
