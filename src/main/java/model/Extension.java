@@ -2,8 +2,8 @@ package model;
 
 public enum Extension {
     EXCEL(".xlsx"),
-    CSV(".csv");
-
+    CSV(".csv"),
+    JSON(".json");
     String extStr;
     Extension(String extStr) {
         this.extStr = extStr;

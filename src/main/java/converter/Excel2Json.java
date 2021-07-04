@@ -2,6 +2,7 @@ package converter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.apache.log4j.Logger;
@@ -68,6 +69,9 @@ public class Excel2Json {
                                 case BOOLEAN:
                                     dataRow.put(headers.get(i), currentRow.getCell(i).getBooleanCellValue());
                                     break;
+                                case DATE:
+                                    dataRow.put(headers.get(i), currentRow.getCell(i).getDateCellValue());
+                                    break;
                                 default:
                                     dataRow.put(headers.get(i), currentRow.getCell(i).getStringCellValue());
                             }
@@ -77,6 +81,7 @@ public class Excel2Json {
                 }
                 //convert Java objects to JSON string
                 final ObjectMapper mapper = new ObjectMapper();
+                mapper.setDateFormat(new SimpleDateFormat(excelParams.getDatePattern()));
                 dataList.add(mapper.writeValueAsString(data));
             }
             //close workBook

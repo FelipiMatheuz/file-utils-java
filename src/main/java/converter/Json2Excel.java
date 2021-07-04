@@ -3,6 +3,7 @@ package converter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Json2Excel {
                 sheetName = "Sheet";
             }
             //convert JSON string to Java list objects
-            final JsonNode jsonNode = new ObjectMapper().readTree(jsonStr);
+            final JsonNode jsonNode = new ObjectMapper().setDateFormat(new SimpleDateFormat(excelParams.getDatePattern())).readTree(jsonStr);
             List<ColumnType> columnTypes = excelParams.getColumnTypes() != null && excelParams.getColumnTypes().size() > 0 ? excelParams.getColumnTypes().get(0) : null;
             buildSheet(jsonNode, excelParams, workbook, sheetName, columnTypes);
             //write file
@@ -81,7 +82,7 @@ public class Json2Excel {
                     sheetName = "Sheet" + (l + 1);
                 }
                 //convert JSON string to Java list objects
-                final JsonNode jsonNode = new ObjectMapper().readTree(jsonList.get(l));
+                final JsonNode jsonNode = new ObjectMapper().setDateFormat(new SimpleDateFormat(excelParams.getDatePattern())).readTree(jsonList.get(l));
                 List<ColumnType> columnTypes = excelParams.getColumnTypes() != null && excelParams.getColumnTypes().size() > l ? excelParams.getColumnTypes().get(l) : null;
                 buildSheet(jsonNode, excelParams, workbook, sheetName, columnTypes);
             }

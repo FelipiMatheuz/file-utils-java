@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FunctionTest {
+public class CompleteTest {
 
     @Test
     @DisplayName("Test JSON -> Excel Single")

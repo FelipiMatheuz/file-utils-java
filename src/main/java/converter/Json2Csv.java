@@ -2,7 +2,6 @@ package converter;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -23,7 +22,7 @@ public class Json2Csv {
     public static boolean generate(final String jsonStr, final CsvParams csvParams) {
         try {
             //read JSON string into JSON object
-            final JsonNode objJson = new ObjectMapper().readTree(jsonStr);
+            final JsonNode objJson = new ObjectMapper().setDateFormat(new SimpleDateFormat(csvParams.getDatePattern())).readTree(jsonStr);
             final Builder csvBuilder = CsvSchema.builder();
             //read JSON column names (first element)
             final JsonNode firstObject = objJson.elements().next();
@@ -32,9 +31,6 @@ public class Json2Csv {
             final CsvSchema csvSchema = csvBuilder.build().withHeader().withColumnSeparator(csvParams.getSeparator());
             //map JSON object to CSV
             final CsvMapper csvMapper = new CsvMapper();
-            final DateFormat df = new SimpleDateFormat(csvParams.getDatePattern());
-            csvMapper.setDateFormat(df);
-            //write data
             csvMapper.writerFor(JsonNode.class).with(csvSchema).writeValue(new File(csvParams.getFullPath()), objJson);
             return true;
         } catch (JsonMappingException e) {

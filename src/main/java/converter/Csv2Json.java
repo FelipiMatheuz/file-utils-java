@@ -7,6 +7,7 @@ import model.CsvParams;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -53,6 +54,7 @@ public class Csv2Json {
             }).collect(Collectors.toList());
 
             final ObjectMapper mapper = new ObjectMapper();
+            mapper.setDateFormat(new SimpleDateFormat(csvParams.getDatePattern()));
             String data = mapper.writeValueAsString(objectList);
 
             logger.info("JSON created successfully: " + data);

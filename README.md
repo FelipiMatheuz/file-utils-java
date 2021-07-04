@@ -11,6 +11,8 @@ Core params, which is used as help for file customization
 Params for convert **JSON** string(s) to **XLSX** file (or vice versa)
 ###CsvParams
 Params for convert **JSON** string to **CSV** file (or vice versa)
+###JsonParams
+Params for manipulation JSON String
 ## Converters
 ### Csv2Json(...)
 Converts a csv file to JSON String
@@ -20,6 +22,8 @@ Converts a JSON String to csv file
 Converts a xlsx file to JSON List
 ### Json2Excel(...)
 Converts a JSON String or JSON List to xlsx file
+##JsonUtils
+Can be used for exporting or column types generating
 ## Notes
 - All converters need the model Params
 - See [test packages](src/test/java) for reference

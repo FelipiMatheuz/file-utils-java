@@ -11,6 +11,7 @@ class FileParams {
     private String fileName;
     private String logDateTime = null;
     private List<List<ColumnType>> columnTypes = null;
+    private String datePattern = "dd/MM/yyyy hh:mm:ss";
 
     public FileParams(String filePath, String fileName) {
         this.filePath = filePath;
@@ -39,6 +40,14 @@ class FileParams {
 
     public void setColumnTypes(List<List<ColumnType>> columnTypes) {
         this.columnTypes = columnTypes;
+    }
+
+    public String getDatePattern() {
+        return datePattern;
+    }
+
+    public void setDatePattern(String datePattern) {
+        this.datePattern = datePattern;
     }
 
     public String getLogDateTime() {

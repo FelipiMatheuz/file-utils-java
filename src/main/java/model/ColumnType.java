@@ -5,5 +5,6 @@ public enum ColumnType {
     STRING,
     INTEGER,
     DOUBLE,
+    DATE,
     BOOLEAN
 }
