@@ -7,7 +7,13 @@
     <groupId>org.felipimz</groupId>
     <artifactId>file-utils-java</artifactId>
     <version>2.2.1</version>
-
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub FelipiMatheuz Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/FelipiMatheuz/file-utils-java</url>
+        </repository>
+    </distributionManagement>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
