@@ -70,7 +70,11 @@ public class Excel2Json {
                                     dataRow.put(headers.get(i), currentRow.getCell(i).getBooleanCellValue());
                                     break;
                                 case DATE:
-                                    dataRow.put(headers.get(i), currentRow.getCell(i).getDateCellValue());
+                                    try {
+                                        dataRow.put(headers.get(i), currentRow.getCell(i).getDateCellValue());
+                                    } catch (IllegalStateException e){
+                                        dataRow.put(headers.get(i), null);
+                                    }
                                     break;
                                 default:
                                     dataRow.put(headers.get(i), currentRow.getCell(i).getStringCellValue());

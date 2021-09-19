@@ -8,7 +8,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JsonUtilsTest {
+public class JsonUtilTest {
 
     @Test
     @DisplayName("Test JSON Export Pretty Document")
@@ -20,7 +20,7 @@ public class JsonUtilsTest {
     @Test
     @DisplayName("Test Generate ColumnTypeList from a JSON String")
     public void testGenerateColumnTypes() {
-        List<ColumnType> columnTypes = JsonUtil.generateColumnTypes(VariablesTest.jsonMock);
+        List<ColumnType> columnTypes = JsonUtil.generateColumnTypes(VariablesTest.jsonMock, "dd/MM/yyyy");
         assertNotNull(columnTypes);
         System.out.println("ColumnType created :");
         for (ColumnType ct : columnTypes) {

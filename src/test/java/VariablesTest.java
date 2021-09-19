@@ -19,9 +19,10 @@ public class VariablesTest {
     private static ExcelParams epMock() {
         ExcelParams excelParams = new ExcelParams(System.getProperty("user.home") + File.separator + "Desktop" + File.separator, "ExcelTest");
         //generate columnTypes (default all String)
-        List<ColumnType> columnTypeList = Arrays.asList(ColumnType.INTEGER, ColumnType.STRING, ColumnType.BOOLEAN, ColumnType.STRING, ColumnType.DOUBLE);
+        List<ColumnType> columnTypeList = Arrays.asList(ColumnType.INTEGER, ColumnType.STRING, ColumnType.BOOLEAN, ColumnType.DATE, ColumnType.DOUBLE);
         List<List<ColumnType>> matrixList = Arrays.asList(columnTypeList, columnTypeList);
         excelParams.setColumnTypes(matrixList);
+        excelParams.setDatePattern("dd/MM/yyyy");
         //generate log files (default null <- no log file)
         //excelParams.setLogDateTime("yyMMddhhmmss");
         return excelParams;
@@ -33,6 +34,7 @@ public class VariablesTest {
         List<ColumnType> columnTypeList = Arrays.asList(ColumnType.INTEGER, ColumnType.STRING, ColumnType.BOOLEAN, ColumnType.DATE, ColumnType.DOUBLE);
         List<List<ColumnType>> matrixList = Arrays.asList(columnTypeList, columnTypeList);
         csvParams.setColumnTypes(matrixList);
+        csvParams.setDatePattern("dd/MM/yyyy");
         //generate log files (default null <- no log file)
         //csvParams.setLogDateTime("yyyyMMddhhmmss");
         return csvParams;

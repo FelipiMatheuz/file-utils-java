@@ -3,6 +3,7 @@ package converter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -154,6 +155,18 @@ public class Json2Excel {
                             break;
                         case BOOLEAN:
                             row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asBoolean());
+                            break;
+                        case DATE:
+                            try {
+                                Cell cell = row.createCell(i);
+                                CellStyle cellStyle = workbook.createCellStyle();
+                                cellStyle.setDataFormat(
+                                        workbook.getCreationHelper().createDataFormat().getFormat(excelParams.getDatePattern()));
+                                cell.setCellValue(new SimpleDateFormat(excelParams.getDatePattern()).parse(dataNode.get(headers.get(i)).asText()));
+                                cell.setCellStyle(cellStyle);
+                            } catch (ParseException e) {
+                                row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());
+                            }
                             break;
                         default:
                             row.createCell(i).setCellValue(dataNode.get(headers.get(i)).asText());

@@ -7,6 +7,7 @@ import model.CsvParams;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -45,6 +46,13 @@ public class Csv2Json {
                             case BOOLEAN:
                                 obj.put(keys[i], Boolean.valueOf(temp));
                                 break;
+                            case DATE:
+                                try {
+                                    obj.put(keys[i], new SimpleDateFormat(csvParams.getDatePattern()).parse(temp));
+                                } catch (ParseException e) {
+                                    obj.put(keys[i], temp);
+                                }
+                                break;
                             default:
                                 obj.put(keys[i], temp);
                         }
@@ -52,6 +60,7 @@ public class Csv2Json {
                 }
                 return obj;
             }).collect(Collectors.toList());
+            in.close();
 
             final ObjectMapper mapper = new ObjectMapper();
             mapper.setDateFormat(new SimpleDateFormat(csvParams.getDatePattern()));

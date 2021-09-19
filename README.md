@@ -1,4 +1,4 @@
-# file-model-java
+# file-utils-java
 Convert JSON, XLSX and CSV files with more effort
 The core of the project is help to extract data import or export with microservices (REST)
 
@@ -6,24 +6,30 @@ Methods can be used in many ways, without much customization
 ## FileParams
 Core params, which is used as help for file customization
 - There are two main params: `filePath` and `fileName` (no need of file extension)
-- No direct usage in conversions, only for defining certain params
+- No direct usage in conversions, only for defining common params
+- Three secondary customizations: `logDateTime`, `columnTypes`, `datePattern`
 ###ExcelParams
 Params for convert **JSON** string(s) to **XLSX** file (or vice versa)
+- Exclusive secondary customizations: `hasFilter`, `freezeHeader`, `autoSizeColumn`, `sheetNames`, `headerBold`
 ###CsvParams
 Params for convert **JSON** string to **CSV** file (or vice versa)
+- Exclusive secondary customization: `separator`
 ###JsonParams
 Params for manipulation JSON String
 ## Converters
-### Csv2Json(...)
+### Csv2Json _generate(csvParams)_
 Converts a csv file to JSON String
-### Json2Csv(...)
+### Json2Csv _generate(json, csvParams)_
 Converts a JSON String to csv file
-### Excel2Json(...)
+### Excel2Json _generate(excelParams)_
 Converts a xlsx file to JSON List
-### Json2Excel(...)
+### Json2Excel _generate(json, excelParams)_, _generate(json list, excelParams)_
 Converts a JSON String or JSON List to xlsx file
-##JsonUtils
-Can be used for exporting or column types generating
+##JsonUtil
+- Can be used for export a formatted json file, using the method _export(json, jsonParams)_
+- Can be used for auto column types generating, using the method _generateColumnTypes(json, datePattern)_
+  - Note that is need to create a `List<List<ColumnType>>` when generating it
+  - `datePattern` can be null  
 ## Notes
 - All converters need the model Params
 - See [test packages](src/test/java) for reference

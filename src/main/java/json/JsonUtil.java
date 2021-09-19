@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class JsonUtil {
         }
     }
 
-    public static List<ColumnType> generateColumnTypes(String jsonStr) {
+    public static List<ColumnType> generateColumnTypes(String jsonStr, String datePattern) {
         try {
             List<ColumnType> columnTypes = new ArrayList<>();
             //read JSON first object
@@ -59,11 +60,17 @@ public class JsonUtil {
                         columnTypes.add(ColumnType.INTEGER);
                     }
                 } catch (Exception e) {
-                    //item is text
-                    if (item.equals("true") || item.equals("false")) {
-                        columnTypes.add(ColumnType.BOOLEAN);
-                    } else {
-                        columnTypes.add(ColumnType.STRING);
+                    try {
+                        //item is a date
+                        new SimpleDateFormat(datePattern).parse(item);
+                        columnTypes.add(ColumnType.DATE);
+                    } catch (Exception e1) {
+                        //item is boolean or text
+                        if (item.equals("true") || item.equals("false")) {
+                            columnTypes.add(ColumnType.BOOLEAN);
+                        } else {
+                            columnTypes.add(ColumnType.STRING);
+                        }
                     }
                 }
             }

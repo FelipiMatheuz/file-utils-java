@@ -1,6 +1,6 @@
 package model;
 
-public enum Extension {
+enum Extension {
     EXCEL(".xlsx"),
     CSV(".csv"),
     JSON(".json");
