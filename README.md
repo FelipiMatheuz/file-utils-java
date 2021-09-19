@@ -3,6 +3,15 @@ Convert JSON, XLSX and CSV files with more effort
 The core of the project is help to extract data import or export with microservices (REST)
 
 Methods can be used in many ways, without much customization
+
+Copy and paste the code below for using in your project:
+```xml
+<dependency>
+<groupId>org.felipimz</groupId>
+<artifactId>file-utils-java</artifactId>
+<version>2.2.1</version>
+</dependency>
+```
 ## FileParams
 Core params, which is used as help for file customization
 - There are two main params: `filePath` and `fileName` (no need of file extension)
