@@ -1,10 +1,10 @@
 # file-utils-java
-Convert JSON, XLSX and CSV files with more effort
-
-The core of the project is help to extract data import or export with microservices (REST)
+Convert JSON to XLSX/CSV files with more effort (or the other way around)
 
 Methods can be used in many ways, without much customization
 
+There are many uses, since generating a spreadsheet to generate graphs in legacy systens, to consuming spreadsheet to sync to the server
+## how to import
 Copy and paste the code below for using in your project:
 ```xml
 <dependency>
@@ -43,4 +43,4 @@ Converts a JSON String or JSON List to xlsx file
 ## Notes
 - All converters need the model Params
 - See [test packages](src/test/java) for reference
-- Any problems or suggestions reported will be helpful
+- Any problems or suggestions will be helpful
