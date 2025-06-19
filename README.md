@@ -35,7 +35,7 @@ Converts a JSON String to csv file
 Converts a xlsx file to JSON List
 ### Json2Excel _generate(json, excelParams)_, _generate(json list, excelParams)_
 Converts a JSON String or JSON List to xlsx file
-##JsonUtil
+## JsonUtil
 - Can be used for export a formatted json file, using the method _export(json, jsonParams)_
 - Can be used for auto column types generating, using the method _generateColumnTypes(json, datePattern)_
   - Note that is need to create a `List<List<ColumnType>>` when generating it
