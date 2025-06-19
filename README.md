@@ -42,5 +42,4 @@ Converts a JSON String or JSON List to xlsx file
 ## Notes
 - All converters need the model Params
 - See [test packages](src/test/java) for reference
-- Still work in progress (optimization / more functions)
 - Any problems or suggestions reported will be helpful
